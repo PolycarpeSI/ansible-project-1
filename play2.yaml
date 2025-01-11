@@ -1,0 +1,36 @@
+---
+- hosts: ws 
+  become: 1
+  gather_facts: 1
+  ignore_errors: 1 # to avoid stopping the playbook whe errors occur
+  vars: # to declare variable
+    user_name: Poly
+    group: Devops
+  vars_files: 
+    - variables.yaml
+
+  tasks:
+    - name: check server uptime
+      command: "{{my_command}}"
+      register: my_uptimec
+      ignore_errors: 1  # when we want to continue to next task when error occurs to the current task
+    - name: list directory
+      shell: ls
+    - name: check the kernel
+      command: uname -r
+      register: kernel_output # to get the output of the command
+    - name: Create a user
+      user:
+        name: "{{user_name}}"
+        state: present
+    - name: Create a group
+      group:
+        name: "{{group}}"
+        state: present
+    - name: Read data
+      debug:
+        #msg: "Hello from my playbook"
+        #var: user_name
+        #var: kernel_output
+        #var: kernel_output.stdout
+        var: my_uptimec.stdout

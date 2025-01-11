@@ -1,0 +1,17 @@
+---
+- hosts: ws 
+  become: 1
+  gather_facts: 1
+  ignore_errors: 1 # to avoid stopping the playbook whe errors occur
+
+  tasks:
+    - name: Package Install
+      yum:
+        name: "{{item}}"
+        #name: ["wget", "finger", "docker"]
+        state: present
+      with_items: # this is to loop. we can olso use loop.
+      #loop:
+        - wget
+        - finger
+        - docker 
